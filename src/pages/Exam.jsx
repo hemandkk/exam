@@ -15,6 +15,7 @@ function ExamPage() {
   const [markedForReview, setMarkedForReview] = useState([]);
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   // user clicks reload or backbutton
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -91,15 +92,18 @@ function ExamPage() {
   };
 
   const handleSubmit = () => {
+    setLoading(true)
     axios.post(`${API_URL}/submit-responses`, {
       user_id: localStorage.getItem('user_id'),
       responses,
       total_questions: questions.length
     }).then(() => 
               {
+                setLoading(false)
                 navigate("/exam-completed", { replace: true });
             }
         ).catch ((error) =>{
+          setLoading(false)
           alert("Some Error Occured, Please Try again.");
         })
   };
@@ -134,10 +138,10 @@ function ExamPage() {
           </div>
         )}
         <div className="mt-3">
-          <button className="btn btn-secondary me-2" onClick={handleReview}>Mark for Review & Next</button>
-          <button className="btn btn-warning me-2" onClick={handleClearResponse}>Clear Response</button>
-          <button className="btn btn-success me-2" onClick={handleSaveNext}>Save & Next</button>
-          <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
+          <button disabled={loading} className="btn btn-secondary me-2" onClick={handleReview}>Mark for Review & Next</button>
+          <button disabled={loading} className="btn btn-warning me-2" onClick={handleClearResponse}>Clear Response</button>
+          <button disabled={loading} className="btn btn-success me-2" onClick={handleSaveNext}>Save & Next</button>
+          <button disabled={loading} className="btn btn-primary" onClick={handleSubmit}>Submit</button>
         </div>
       </div>
       <div className="sidebar p-3 bg-light">

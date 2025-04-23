@@ -18,10 +18,10 @@ function Navbar() {
         <div>
           {userType ==='' && <Link className="btn btn-outline-light mx-2" to="/">Login</Link>}
           {userType === 'admin' && <Link className="btn btn-outline-light mx-2" to="/admin">Admin</Link>}
-          {userType === 'student' && <Link className="btn btn-outline-light mx-2" to="/exam">Exam</Link>}
+          {/* {userType === 'student' && <Link className="btn btn-outline-light mx-2" to="/exam">Exam</Link>} */}
         </div>
         <div className="ml-auto">
-        { userType !=='' && <button className="btn btn-outline-danger" onClick={handleLogout}>
+        { (userType !=='' && userType !==null) && <button className="btn btn-outline-danger" onClick={handleLogout}>
           Logout
         </button>}
     </div>

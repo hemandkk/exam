@@ -36,3 +36,7 @@ code {
     border: 0 !important;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !important;
 }
+.custom-placeholder::placeholder {
+  color: #999 !important;  /* Lighter than default */
+  font-style: italic;
+}

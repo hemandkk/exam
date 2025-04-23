@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import StudentRoute from "./components/StudentRoute";
 import AdminRoute from "./components/AdminRoute";
 import ExamCompleted from "./pages/ExamCompleted";
+import RegisterForm from "./pages/RegisterForm";
 import ErrorBoundary from "./components/ErrorBoundary"
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Routes>  
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterForm />} />
         {/* Admin routes */}
         <Route path="/admin" element={ <ProtectedRoute><AdminRoute><AdminDashboard /></AdminRoute></ProtectedRoute>} />
         <Route path="/results/:studentId" element={<ProtectedRoute><AdminRoute><Results /></AdminRoute> </ProtectedRoute>} />

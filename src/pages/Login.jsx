@@ -8,6 +8,7 @@ export default function Login() {
   //console.log(API_URL, "URL")
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const userCategory = localStorage.getItem('user_type');
   useEffect(()=>{
@@ -25,6 +26,7 @@ export default function Login() {
   }
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       const response = await axios.post(`${API_URL}/login`, {
         email,
@@ -37,9 +39,11 @@ export default function Login() {
       localStorage.setItem('name', name);
       localStorage.setItem('ID', ID);
       localStorage.setItem("token", token); // during login
+      setLoading(false)
       handleLoggedUser(user_type)
     } catch (error) {
       console.log(error)
+      setLoading(false)
       if(error?.status === 403){
         alert("You have already completed the exam.");
       } else {
@@ -76,7 +80,7 @@ export default function Login() {
                   required
                 />
               </Form.Group>
-              <Button variant="primary" type="submit" className="w-100">
+              <Button disabled={loading} variant="primary" type="submit" className="w-100">
                 Login
               </Button>
             </Form>
