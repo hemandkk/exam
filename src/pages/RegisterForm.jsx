@@ -65,6 +65,16 @@ const RegisterForm = () => {
             console.log("Success:", response.data);
             tostTrigger(response?.data?.message,response?.status ===200 ? 'success':  'danger')
             setLoading(false);
+            setFormData({
+              name: '',
+              email: '',
+              password: '',
+              user_stream: '',
+              contact_number: '',
+              university: '',
+              year_of_study: ''
+            });
+          
           } catch (error) {
             setLoading(false);
             if(error?.response?.data?.detail !== '' ){
