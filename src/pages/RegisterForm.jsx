@@ -127,6 +127,7 @@ const RegisterForm = () => {
                   onChange={handleChange}
                   className="custom-placeholder"
                   required
+                  minLength={6}
                 />
               </Form.Group>
             </Col>
