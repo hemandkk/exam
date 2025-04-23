@@ -11,6 +11,7 @@ import StudentRoute from "./components/StudentRoute";
 import AdminRoute from "./components/AdminRoute";
 import ExamCompleted from "./pages/ExamCompleted";
 import RegisterForm from "./pages/RegisterForm";
+import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary"
 function App() {
   return (
@@ -18,8 +19,8 @@ function App() {
       <ErrorBoundary>
       <Navbar />
       <Routes>  
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
+       {/*  <Route path="/" element={<Login />} /> */}
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/register" element={<RegisterForm />} />
         {/* Admin routes */}
         <Route path="/admin" element={ <ProtectedRoute><AdminRoute><AdminDashboard /></AdminRoute></ProtectedRoute>} />
@@ -28,6 +29,9 @@ function App() {
         <Route path="/instructions" element={<ProtectedRoute><StudentRoute><Instructions /></StudentRoute></ProtectedRoute>} />
         <Route path="/exam" element={<ProtectedRoute><StudentRoute><Exam /> </StudentRoute></ProtectedRoute>} />
         <Route path="/exam-completed" element={<ProtectedRoute><StudentRoute><ExamCompleted /> </StudentRoute></ProtectedRoute>} />
+
+        {/* Catch-all route for 404 */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       </ErrorBoundary>
     </Router>
