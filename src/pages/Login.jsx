@@ -33,11 +33,13 @@ export default function Login() {
         password,
       });
 
-      const { user_id, user_type , token, name, ID} = response.data;
+    
+      const { ID, user_id, user_type , token, name, user_stream} = response.data;
       localStorage.setItem('user_id', user_id);
       localStorage.setItem('user_type', user_type);
       localStorage.setItem('name', name);
       localStorage.setItem('ID', ID);
+      localStorage.setItem('user_stream', user_stream);
       localStorage.setItem("token", token); // during login
       setLoading(false)
       handleLoggedUser(user_type)

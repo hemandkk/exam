@@ -5,9 +5,7 @@ import ExamTimer from './ExamTimer';
 import './exam.css'
 const API_URL = process.env.REACT_APP_API_URL;
 const EXAM_TIME = 3600 // 60 mins
-const STUDENT_NAME = localStorage.getItem('name') || 'no-name';
-const ID = localStorage.getItem('ID') || '001';
-const USER_ID = localStorage.getItem('user_id')
+
 function ExamPage() {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -16,6 +14,11 @@ function ExamPage() {
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  const STUDENT_NAME = localStorage.getItem('name') || 'no-name';
+const ID = localStorage.getItem('ID') || '001';
+const USER_ID = localStorage.getItem('user_id')
+//console.log(localStorage.getItem('name'), "name")
   // user clicks reload or backbutton
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -42,8 +45,9 @@ function ExamPage() {
 
   
   useEffect(() => {
-    const userCategory = localStorage.getItem('category') || 'commerce';
-
+    const userCategory = localStorage.getItem('user_stream') || 'commerce';
+//console.log(  userCategory , "user")
+//console.log(  localStorage.getItem('user_stream') , "local")
     setCategory(userCategory);
     axios.get(`${API_URL}/questions/${userCategory}`)
       .then(res => setQuestions(res.data))
@@ -115,7 +119,7 @@ function ExamPage() {
         <div className="d-flex justify-content-between align-items-center">
           <h5>Category: {category}</h5>
           <strong>{STUDENT_NAME.toUpperCase()} ({ID})</strong>
-          <ExamTimer totalTime={EXAM_TIME} onSubmit={handleSubmit} />
+          {/* <ExamTimer totalTime={EXAM_TIME} onSubmit={handleSubmit} /> */}
         </div>
         {questions.length > 0 && (
           <div className="question-box mt-3">

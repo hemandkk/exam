@@ -13,25 +13,26 @@ import ExamCompleted from "./pages/ExamCompleted";
 import RegisterForm from "./pages/RegisterForm";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary"
+import Layout from './components/Layout';
 function App() {
   return (
     <Router>
       <ErrorBoundary>
-      <Navbar />
+
       <Routes>  
-       {/*  <Route path="/" element={<Login />} /> */}
-        {/* <Route path="/login" element={<Login />} /> */}
+       { <Route path="/" element={<Login />} />}
+        {<Route path="/login" element={<Login />} />}
         <Route path="/register" element={<RegisterForm />} />
         {/* Admin routes */}
-        <Route path="/admin" element={ <ProtectedRoute><AdminRoute><AdminDashboard /></AdminRoute></ProtectedRoute>} />
-        <Route path="/results/:studentId" element={<ProtectedRoute><AdminRoute><Results /></AdminRoute> </ProtectedRoute>} />
+        <Route path="/admin" element={ <ProtectedRoute><Navbar /><AdminRoute><AdminDashboard /></AdminRoute></ProtectedRoute>} />
+        <Route path="/results/:studentId" element={<ProtectedRoute><Navbar /><AdminRoute><Results /></AdminRoute> </ProtectedRoute>} />
         {/* student routes */}
-        <Route path="/instructions" element={<ProtectedRoute><StudentRoute><Instructions /></StudentRoute></ProtectedRoute>} />
-        <Route path="/exam" element={<ProtectedRoute><StudentRoute><Exam /> </StudentRoute></ProtectedRoute>} />
-        <Route path="/exam-completed" element={<ProtectedRoute><StudentRoute><ExamCompleted /> </StudentRoute></ProtectedRoute>} />
+        <Route path="/instructions" element={<ProtectedRoute><Navbar /><StudentRoute><Instructions /></StudentRoute></ProtectedRoute>} />
+        <Route path="/exam" element={<ProtectedRoute><StudentRoute><Navbar /><Exam /> </StudentRoute></ProtectedRoute>} />
+        <Route path="/exam-completed" element={<ProtectedRoute><Navbar /><StudentRoute><ExamCompleted /> </StudentRoute></ProtectedRoute>} />
 
         {/* Catch-all route for 404 */}
-        <Route path="*" element={<NotFound />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
       </Routes>
       </ErrorBoundary>
     </Router>

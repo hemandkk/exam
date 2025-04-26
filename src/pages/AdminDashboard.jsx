@@ -103,6 +103,7 @@ export default function AdminDashboard() {
         formData.append('file', questionFile);
         const result = await axios.post(`${API_URL}/upload-questions/${category}`, formData);
         tostTrigger(result?.data?.message,result?.status ===200 ? 'success':  'danger')
+        setLoader(false)
         fetchStudents();
       } catch (error) {
         setLoader(false)
