@@ -96,6 +96,13 @@ const USER_ID = localStorage.getItem('user_id')
   };
 
   const handleSubmit = () => {
+    // Show confirmation dialog
+    var userConfirmed = window.confirm("Are you sure want to submit? This action cannot be reverted.");
+    
+    // If user clicks "Cancel", exit the function
+    if (!userConfirmed) {
+      return; // Stop the function from executing
+    }
     setLoading(true)
     axios.post(`${API_URL}/submit-responses`, {
       user_id: localStorage.getItem('user_id'),

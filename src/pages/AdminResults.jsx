@@ -38,6 +38,7 @@ const AdminResultsTable = () => {
       <table className="table table-bordered table-hover mt-3">
         <thead className="table-dark">
           <tr>
+            <th>Name</th>
             <th>Email</th>
             <th>Stream</th>
             <th>Status</th>
@@ -52,6 +53,7 @@ const AdminResultsTable = () => {
           ) : (
             currentResults.map((student) => (
               <tr key={student.id}>
+                <td>{student.name}</td>
                 <td>{student.email}</td>
                 <td>{student.stream}</td>
                 <td>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Spinner} from 'react-bootstrap';
 import axios from 'axios';
 import ToastAlert from '../components/ToastAlert'
@@ -17,6 +17,11 @@ const RegisterForm = () => {
 
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [categoryList, setCategoryList] = useState([]);
+
+  useEffect(()=>{
+    fetchStreams()
+  }, [])
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -27,6 +32,18 @@ const RegisterForm = () => {
     setToast({ show: true, message: message, type: type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
   }
+  const fetchStreams = async () => {
+    const token = localStorage.getItem("token");
+    const res = await axios.get(`${API_URL}/streams/`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if(res?.data?.length > 0 ){
+      setCategoryList(res.data);
+    }
+  };
+
   const handleValidation = ()=>{
     let valid = true
     if(formData.name === ''){
@@ -145,14 +162,20 @@ const RegisterForm = () => {
               <Form.Group className="mb-3">
                 <Form.Label>Stream</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="(e.g., Bsc Computer science)"
+                  as="select"
                   name="user_stream"
                   value={formData.user_stream}
                   onChange={handleChange}
                   className="custom-placeholder"
                   required
-                />
+                >
+                  <option value="">Select your stream</option>
+                    {categoryList.map((stream) => (
+                  <option key={stream} value={stream}>
+                    {stream}
+                  </option>
+          ))}
+                  </Form.Control>
               </Form.Group>
             </Col>
           </Row>
