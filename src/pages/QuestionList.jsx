@@ -4,25 +4,11 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 const QuestionList = ({categoryList}) => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('commerce');
+  const [selectedCategory, setSelectedCategory] = useState(categoryList[0]);
   const [questions, setQuestions] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [total, setTotal] = useState(0);
-
-
-  /* const fetchCategories = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/categories`);
-      setCategories(res.data);
-      if (res.data.length > 0) {
-        setSelectedCategory(res.data[0]); // Default to first category
-      }
-    } catch (err) {
-      console.error("Error fetching categories:", err);
-    }
-  }; */
 
   const fetchQuestions = async () => {
     if (!selectedCategory) return;
@@ -45,10 +31,6 @@ const QuestionList = ({categoryList}) => {
       console.error("Error deleting question:", err);
     }
   };
-
-  /* useEffect(() => {
-    fetchCategories();
-  }, []); */
 
   useEffect(() => {
     if (selectedCategory && page) {

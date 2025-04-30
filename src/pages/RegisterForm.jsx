@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Spinner} from 'react-bootstrap';
 import axios from 'axios';
 import ToastAlert from '../components/ToastAlert'
+import Select from 'react-select';
+
 const API_URL = process.env.REACT_APP_API_URL;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RegisterForm = () => {
@@ -18,16 +20,22 @@ const RegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [categoryList, setCategoryList] = useState([]);
-
+  let selectedOption = formData.user_stream ? { value: formData.user_stream, label: formData.user_stream } : null;
   useEffect(()=>{
     fetchStreams()
   }, [])
   const handleChange = (e) => {
+    //console.log(e.target);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    if(e.target.name === 'user_stream'){
+       selectedOption = e.target.value ? { value: e.target.value, label: e.target.value } : null;
+    }
   };
+
+  
   const tostTrigger = (message, type)=>{
     setToast({ show: true, message: message, type: type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
@@ -46,6 +54,7 @@ const RegisterForm = () => {
 
   const handleValidation = ()=>{
     let valid = true
+    
     if(formData.name === ''){
         alert("Please enter Full Name")
         valid = false
@@ -58,7 +67,8 @@ const RegisterForm = () => {
     } else if(formData.password === ''){
         alert("Please enter Password")
         valid = false
-    } else if(formData.user_stream === ''){
+    } else if(formData.user_stream === '' || formData.user_stream === null){
+      
         alert("Please enter Stream")
         valid = false
     } else if(formData.contact_number === ''){
@@ -76,7 +86,8 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if(handleValidation){
+    if(handleValidation()){
+
         try {
             const response = await axios.post(`${API_URL}/register-single-student`, formData);
             console.log("Success:", response.data);
@@ -161,7 +172,15 @@ const RegisterForm = () => {
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Stream</Form.Label>
-                <Form.Control
+                <Select
+                  name="user_stream"
+                  value={selectedOption}
+                  onChange={(selected) => handleChange({ target: { name: 'user_stream', value: selected ? selected.value : '' } })}
+                  placeholder="Search for your stream..."
+                  options={categoryList.map((stream) => ({ value: stream, label: stream }))}
+                  isSearchable
+                />
+                {/* <Form.Control
                   as="select"
                   name="user_stream"
                   value={formData.user_stream}
@@ -169,13 +188,13 @@ const RegisterForm = () => {
                   className="custom-placeholder"
                   required
                 >
-                  <option value="">Select your stream</option>
-                    {categoryList.map((stream) => (
-                  <option key={stream} value={stream}>
-                    {stream}
-                  </option>
-          ))}
-                  </Form.Control>
+                    <option value="">Select your stream</option>
+                      {categoryList.map((stream) => (
+                        <option key={stream} value={stream}>
+                          {stream}
+                        </option>
+                    ))}
+                </Form.Control> */}
               </Form.Group>
             </Col>
           </Row>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ToastAlert from '../components/ToastAlert'
 import ExamTimer from './ExamTimer';
 import './exam.css'
 const API_URL = process.env.REACT_APP_API_URL;
-const EXAM_TIME = 3600 // 60 mins
+const EXAM_TIME = 10800 // 60 mins
 
 function ExamPage() {
   const [questions, setQuestions] = useState([]);
@@ -16,8 +17,10 @@ function ExamPage() {
   const [loading, setLoading] = useState(false);
 
   const STUDENT_NAME = localStorage.getItem('name') || 'no-name';
-const ID = localStorage.getItem('ID') || '001';
-const USER_ID = localStorage.getItem('user_id')
+  const ID = localStorage.getItem('ID') || '001';
+  const USER_ID = localStorage.getItem('user_id')
+
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
 //console.log(localStorage.getItem('name'), "name")
   // user clicks reload or backbutton
   useEffect(() => {
@@ -51,7 +54,9 @@ const USER_ID = localStorage.getItem('user_id')
     setCategory(userCategory);
     axios.get(`${API_URL}/questions/${userCategory}`)
       .then(res => setQuestions(res.data))
-      .catch(err => console.error(err));
+      .catch(err => {
+        tostTrigger("There is been an error in fetching questions, log out and try again",'danger')
+      });
   }, []);
 
   const handleOptionChange = (questionId, option) => {
@@ -59,6 +64,11 @@ const USER_ID = localStorage.getItem('user_id')
     setResponses(newResponses);
     localStorage.setItem('responses', JSON.stringify(newResponses));
   };
+
+  const tostTrigger = (message, type)=>{
+    setToast({ show: true, message: message, type: type });
+    setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
+  }
 
   const handleSaveNext = () => {
     setCurrentQuestionIndex(prev => Math.min(prev + 1, questions.length - 1));
@@ -97,7 +107,7 @@ const USER_ID = localStorage.getItem('user_id')
 
   const handleSubmit = () => {
     // Show confirmation dialog
-    var userConfirmed = window.confirm("Are you sure want to submit? This action cannot be reverted.");
+    var userConfirmed = window.confirm("Are you sure want to complete the exam? This exam will mark as compeleted.");
     
     // If user clicks "Cancel", exit the function
     if (!userConfirmed) {
@@ -115,7 +125,7 @@ const USER_ID = localStorage.getItem('user_id')
             }
         ).catch ((error) =>{
           setLoading(false)
-          alert("Some Error Occured, Please Try again.");
+          tostTrigger("Error during exam. Please contact admin.",'danger')
         })
   };
 
@@ -123,10 +133,11 @@ const USER_ID = localStorage.getItem('user_id')
   return (
     <div className="exam-container d-flex">
       <div className="exam-content flex-grow-1 p-3">
+      { toast?.show && <ToastAlert show={toast.show}  setShow={setToast} message={toast.message} variant={toast.type} />}
         <div className="d-flex justify-content-between align-items-center">
           <h5>Category: {category}</h5>
           <strong>{STUDENT_NAME.toUpperCase()} ({ID})</strong>
-          {/* <ExamTimer totalTime={EXAM_TIME} onSubmit={handleSubmit} /> */}
+          <ExamTimer totalTime={EXAM_TIME} onSubmit={handleSubmit} />
         </div>
         {questions.length > 0 && (
           <div className="question-box mt-3">
