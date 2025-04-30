@@ -18,6 +18,7 @@ const RegisterForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [stremLoading, setStreamLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
   const [categoryList, setCategoryList] = useState([]);
   let selectedOption = formData.user_stream ? { value: formData.user_stream, label: formData.user_stream } : null;
@@ -41,12 +42,14 @@ const RegisterForm = () => {
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
   }
   const fetchStreams = async () => {
+    setStreamLoading(true)
     const token = localStorage.getItem("token");
     const res = await axios.get(`${API_URL}/streams/`,{
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    setStreamLoading(false)
     if(res?.data?.length > 0 ){
       setCategoryList(res.data);
     }
@@ -174,6 +177,7 @@ const RegisterForm = () => {
                 <Form.Label>Stream</Form.Label>
                 <Select
                   name="user_stream"
+                  isLoading={stremLoading}
                   value={selectedOption}
                   onChange={(selected) => handleChange({ target: { name: 'user_stream', value: selected ? selected.value : '' } })}
                   placeholder="Search for your stream..."
