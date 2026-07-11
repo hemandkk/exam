@@ -64,6 +64,38 @@ function ExamPage() {
     localStorage.setItem('responses', JSON.stringify(newResponses));
   };
 
+  const renderOptionBlock = (question, optionKey, label, secondaryLabel) => {
+    const isSelected = responses[question.id] === optionKey;
+    const optionText = question[`option_${optionKey}`] || question[`option_${optionKey.toLowerCase()}`];
+    const secondaryOptionText = question[`option_${optionKey}_secondary`] || question[`option_${optionKey.toLowerCase()}_secondary`];
+
+    return (
+      <div key={`${question.id}-${optionKey}`} className={`option-card ${isSelected ? 'selected' : ''}`}>
+        <div className="option-choice-row">
+          <input
+            className="form-check-input frm-border"
+            type="radio"
+            name={`q_${question.id}`}
+            id={`${question.id}_${optionKey}`}
+            checked={isSelected}
+            onChange={() => handleOptionChange(question.id, optionKey)}
+          />
+          <label className="form-check-label option-label" htmlFor={`${question.id}_${optionKey}`}>
+            <span className="option-letter">{optionKey.toUpperCase()}</span>
+            <span className="option-body">
+              <strong>{label}</strong>: {optionText}
+            </span>
+          </label>
+        </div>
+        {secondaryLabel && (
+          <div className="option-secondary-text">
+            <strong>{secondaryLabel}</strong>: {secondaryOptionText || optionText}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const tostTrigger = (message, type)=>{
     setToast({ show: true, message: message, type: type });
     setTimeout(() => setToast({ show: false, message: '', type: '' }), 3000);
@@ -128,6 +160,8 @@ function ExamPage() {
         })
   };
 
+  const currentQuestion = questions[currentQuestionIndex];
+  const secondaryLanguageLabel = currentQuestion?.secondary_language ? currentQuestion.secondary_language.toUpperCase() : 'SECONDARY LANGUAGE';
 
   return (
     <div className="exam-container d-flex">
@@ -138,24 +172,33 @@ function ExamPage() {
           <strong>{STUDENT_NAME.toUpperCase()} ({ID})</strong>
           <ExamTimer totalTime={EXAM_TIME} onSubmit={handleSubmit} />
         </div>
-        {questions.length > 0 && (
+        {currentQuestion && (
           <div className="question-box mt-3">
-            <h6>Q {currentQuestionIndex + 1}: {questions[currentQuestionIndex].question}</h6>
-            {['a', 'b', 'c', 'd'].map(opt => (
-              <div key={opt} className="form-check">
-                <input
-                  className="frm-border form-check-input "
-                  type="radio"
-                  name={`q_${questions[currentQuestionIndex].id}`}
-                  id={`q_${questions[currentQuestionIndex].id}_${opt}`}
-                  checked={responses[questions[currentQuestionIndex].id] === opt}
-                  onChange={() => handleOptionChange(questions[currentQuestionIndex].id, opt)}
-                />
-                <label className="form-check-label" for={`q_${questions[currentQuestionIndex].id}_${opt}`}>
-                  {questions[currentQuestionIndex][`option_${opt.toLowerCase()}`]}
-                </label>
+            <div className="question-header-card">
+              <div>
+                <h5 className="mb-1">Question {currentQuestionIndex + 1}</h5>
+                <p className="mb-0 text-muted">Choose one answer for both language versions.</p>
               </div>
-            ))}
+              <span className="question-language-badge">{currentQuestion.secondary_language ? currentQuestion.secondary_language : 'English + Secondary'}</span>
+            </div>
+
+            <div className="row g-3 mt-2">
+              <div className="col-lg-6">
+                <div className="language-panel">
+                  <div className="language-panel-title">English</div>
+                  <div className="question-text-block">{currentQuestion.question}</div>
+                  {['a', 'b', 'c', 'd'].map((opt) => renderOptionBlock(currentQuestion, opt, 'English', 'Translated'))}
+                </div>
+              </div>
+
+              <div className="col-lg-6">
+                <div className="language-panel">
+                  <div className="language-panel-title">{secondaryLanguageLabel}</div>
+                  <div className="question-text-block">{currentQuestion.question_secondary || currentQuestion.question}</div>
+                  {['a', 'b', 'c', 'd'].map((opt) => renderOptionBlock(currentQuestion, opt, 'Translated', ''))}
+                </div>
+              </div>
+            </div>
           </div>
         )}
         <div className="mt-3">
