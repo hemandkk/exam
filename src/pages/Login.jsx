@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
-const API_URL = process.env.REACT_APP_API_URL;
+import API, { persistAuthToken } from '../services/api';
+
 export default function Login() {
   //console.log(process.env, "process.env");
   //console.log(API_URL, "URL")
@@ -28,19 +28,25 @@ export default function Login() {
     e.preventDefault();
     setLoading(true)
     try {
-      const response = await axios.post(`${API_URL}/login`, {
+      const response = await API.post('/login', {
         email,
         password,
       });
 
-    
-      const { ID, user_id, user_type , token, name, user_stream} = response.data;
+      const payload = response.data || {};
+      const token = payload.access_token || payload.token || payload?.data?.token || payload?.data?.access_token;
+      const { ID, user_id, user_type, name, user_stream } = payload;
+
+      if (!token) {
+        throw new Error('Authentication token missing from server response');
+      }
+
       localStorage.setItem('user_id', user_id);
       localStorage.setItem('user_type', user_type);
       localStorage.setItem('name', name);
       localStorage.setItem('ID', ID);
       localStorage.setItem('user_stream', user_stream);
-      localStorage.setItem("token", token); // during login
+      persistAuthToken(token);
       setLoading(false)
       handleLoggedUser(user_type)
     } catch (error) {

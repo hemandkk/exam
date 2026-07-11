@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Button, Container, Row, Col, Card, Spinner} from 'react-bootstrap';
-import axios from 'axios';
 import ToastAlert from '../components/ToastAlert'
 import Select from 'react-select';
-
-const API_URL = process.env.REACT_APP_API_URL;
+import API from '../services/api';
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -43,12 +41,7 @@ const RegisterForm = () => {
   }
   const fetchStreams = async () => {
     setStreamLoading(true)
-    const token = localStorage.getItem("token");
-    const res = await axios.get(`${API_URL}/streams/`,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await API.get('/streams/');
     setStreamLoading(false)
     if(res?.data?.length > 0 ){
       setCategoryList(res.data);
@@ -92,7 +85,7 @@ const RegisterForm = () => {
     if(handleValidation()){
 
         try {
-            const response = await axios.post(`${API_URL}/register-single-student`, formData);
+            const response = await API.post('/register-single-student', formData);
             console.log("Success:", response.data);
             tostTrigger(response?.data?.message,response?.status ===200 ? 'success':  'danger')
             setLoading(false);

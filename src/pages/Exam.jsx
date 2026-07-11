@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import ToastAlert from '../components/ToastAlert'
 import ExamTimer from './ExamTimer';
 import './exam.css'
-const API_URL = process.env.REACT_APP_API_URL;
+import API, { getStoredToken } from '../services/api';
 const EXAM_TIME = 10800 // 60 mins
 
 function ExamPage() {
@@ -52,7 +51,7 @@ function ExamPage() {
 //console.log(  userCategory , "user")
 //console.log(  localStorage.getItem('user_stream') , "local")
     setCategory(userCategory);
-    axios.get(`${API_URL}/questions/${userCategory}`)
+    API.get(`/questions/${userCategory}`)
       .then(res => setQuestions(res.data))
       .catch(err => {
         tostTrigger("There is been an error in fetching questions, log out and try again",'danger')
@@ -75,7 +74,7 @@ function ExamPage() {
   };
   const submitResponsesBeforeUnload = () => {
 
-    const token = localStorage.getItem('access_token'); // or get from cookie
+    const token = getStoredToken();
     const data = {
       user_id: USER_ID,
       responses,
@@ -83,7 +82,7 @@ function ExamPage() {
       token, // attach token manually
     };
     const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-    navigator.sendBeacon(`${API_URL}/submit-responses-v2`, blob);
+    navigator.sendBeacon(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api/v1'}/submit-responses-v2`, blob);
     
   };
   const handleReview = () => {
@@ -114,7 +113,7 @@ function ExamPage() {
       return; // Stop the function from executing
     }
     setLoading(true)
-    axios.post(`${API_URL}/submit-responses`, {
+    API.post('/submit-responses', {
       user_id: localStorage.getItem('user_id'),
       responses,
       total_questions: questions.length

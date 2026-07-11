@@ -7,11 +7,12 @@ function Navbar() {
   const [user_type, setUserType] = useState(initialUserType || '') ;
   
   const handleLogout = () => {
+    localStorage.removeItem("access_token");
     localStorage.removeItem("token");
-    localStorage.removeItem("user_id"); // if you're storing user info too
-    localStorage.removeItem("user_type"); // if you're storing user info too
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("user_type");
     localStorage.clear()
-    window.location.href = "/login"; // redirect to login page
+    window.location.href = "/login";
   };
 
  // Update state on mount (in case localStorage was set before Navbar mounted)

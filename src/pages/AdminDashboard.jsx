@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import ToastAlert from '../components/ToastAlert'
 import Loader from '../components/Loader'
 import AdminResultsTable from './AdminResults'
 import RegisteredStudentsTable from './RegisteredStudents'
 import QuestionList from './QuestionList'
+import API from '../services/api';
 
 const supported_files = ['xlsx', 'csv']
 //const categoryList = ['science', 'commerce', 'B-Tech-IT', 'arts']
-const API_URL = process.env.REACT_APP_API_URL;
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [studentFile, setStudentFile] = useState(null);
@@ -22,19 +21,16 @@ export default function AdminDashboard() {
   const [categoryList, setCategoryList] = useState(['science', 'commerce', 'B-Tech-IT', 'arts']);
 
   const fetchStudents = async () => {
-    const res = await axios.get(`${API_URL}/students`);
+    const res = await API.get('/students');
     setStudents(res.data);
     setStats(prev => ({ ...prev, total: res.data.length }));
   };
   const fetchStreams = async () => {
-    const token = localStorage.getItem("token");
-    const res = await axios.get(`${API_URL}/streams/`,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const res = await API.get('/streams/');
+    console.log(res?.data, "res?.data")
     if(res?.data?.length > 0 ){
       setCategoryList(res.data);
+      setCategory(res.data[0]); // set to first stream  
     }
   };
 
@@ -62,7 +58,9 @@ export default function AdminDashboard() {
 
     try {
         setLoader(true)
-        const result = await axios.post(`${API_URL}/upload-students`, formData);
+        const result = await API.post('/upload-students', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         tostTrigger(result?.data?.message,result?.status ===200 ? 'success':  'danger')
         setLoader(false)
         fetchStudents();
@@ -101,7 +99,9 @@ export default function AdminDashboard() {
         setLoader(true)
         const formData = new FormData();
         formData.append('file', questionFile);
-        const result = await axios.post(`${API_URL}/upload-questions/${category}`, formData);
+        const result = await API.post(`/upload-questions/${category}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
         tostTrigger(result?.data?.message,result?.status ===200 ? 'success':  'danger')
         setLoader(false)
         fetchStudents();
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
   };
 
   const deleteStudent = async (id) => {
-    await axios.delete(`${API_URL}/students/${id}`);
+    await API.delete(`/students/${id}`);
     fetchStudents();
   };
 

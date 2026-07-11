@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL;
+import API from "../services/api";
 
 const QuestionList = ({categoryList}) => {
   const [selectedCategory, setSelectedCategory] = useState(categoryList[0]);
@@ -13,7 +11,7 @@ const QuestionList = ({categoryList}) => {
   const fetchQuestions = async () => {
     if (!selectedCategory) return;
     try {
-      const res = await axios.get(`${API_URL}/questions/`, {
+      const res = await API.get('/questions/', {
         params: { category: selectedCategory, page, limit },
       });
       setQuestions(res.data.questions);
@@ -25,7 +23,7 @@ const QuestionList = ({categoryList}) => {
 
   const deleteQuestion = async (id) => {
     try {
-      await axios.delete(`${API_URL}/questions/${id}`);
+      await API.delete(`/questions/${id}`);
       fetchQuestions(); // Refresh after delete
     } catch (err) {
       console.error("Error deleting question:", err);

@@ -12,11 +12,12 @@ function ExamCompleted() {
     }
   ,[])
   const handleLogout = () => {
+    localStorage.removeItem("access_token");
     localStorage.removeItem("token");
-    localStorage.removeItem("user_id"); // if you're storing user info too
-    localStorage.removeItem("user_type"); // if you're storing user info too
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("user_type");
     localStorage.clear()
-    window.location.href = "/login"; // redirect to login page
+    window.location.href = "/login";
     navigate('/login');
   };
 

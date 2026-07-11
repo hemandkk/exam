@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
-
-const API_URL = process.env.REACT_APP_API_URL;
+import API from "../services/api";
 
 const RegisteredStudentsTable = ({ students, deleteStudent, setStudents }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +19,7 @@ const RegisteredStudentsTable = ({ students, deleteStudent, setStudents }) => {
   );
   const toggleExamStatus = async (id, status) => {
     try {
-      await axios.put(`${API_URL}/students/${id}/exam-status?status=${status}`);
+      await API.put(`/students/${id}/exam-status?status=${status}`);
       const tempConst = students.map((el) => { 
         
         if(el.id === id){

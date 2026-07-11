@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-const API_URL = process.env.REACT_APP_API_URL;
+import API from "../services/api";
 const AdminResultsTable = () => {
   const [results, setResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,7 +11,7 @@ const AdminResultsTable = () => {
 
   const fetchResults = async () => {
     try {
-      const res = await axios.get(`${API_URL}/admin-results`);
+      const res = await API.get('/admin-results');
       setResults(res.data);
     } catch (error) {
       console.error("Error fetching results:", error);
