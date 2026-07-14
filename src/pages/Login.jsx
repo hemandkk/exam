@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { Toaster, toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import API, { persistAuthToken } from '../services/api';
 
@@ -24,6 +25,22 @@ export default function Login() {
       navigate('/instructions');
     }
   }
+  const showErrorToast = (message) => {
+    toast.error(message, {
+      duration: 4000,
+      position: 'top-right',
+      style: {
+        borderRadius: '12px',
+        background: '#fff1f2',
+        color: '#be123c',
+        border: '1px solid #fecdd3',
+        boxShadow: '0 10px 30px rgba(190, 18, 60, 0.15)',
+        fontWeight: 600,
+      },
+      icon: '⚠️',
+    });
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true)
@@ -53,15 +70,17 @@ export default function Login() {
       console.log(error)
       setLoading(false)
       if(error?.status === 403){
-        alert("You have already completed the exam.");
+        showErrorToast('You have already completed the exam.');
       } else {
-        alert("Invalid credentials. Please check email/password.");
+        showErrorToast('Invalid credentials. Please check email/password.');
       }
     }
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center min-vh-100">
+    <>
+      <Toaster />
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
     <Row className="w-100 justify-content-center">
       <Col md={6} lg={5}>
         <Card className="shadow-lg">
@@ -96,6 +115,7 @@ export default function Login() {
         </Card>
       </Col>
     </Row>
-  </Container>
+      </Container>
+    </>
   );
 }
