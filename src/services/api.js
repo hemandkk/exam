@@ -5,7 +5,7 @@ const API = axios.create({
   withCredentials: false,
 });
 
-const TOKEN_KEYS = ["access_token", "token"];
+const TOKEN_KEYS = ["access_token", "token", "user_id"];
 const excludedRoutes = [
   "/login",
   "/auth/login",
