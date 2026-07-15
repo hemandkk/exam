@@ -64,15 +64,24 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 401 || error?.response?.status === 403) {
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+
+    if (
+      (status === 401 || status === 403) &&
+      !isExcludedRoute(url)
+    ) {
       clearAuthToken();
-      if (typeof window !== "undefined" && !window.location.pathname.includes("/login")) {
-        window.location.href = "/login";
+
+      if (window.location.pathname !== "/login") {
+        window.location.replace("/login");
       }
     }
+
     return Promise.reject(error);
   }
 );
